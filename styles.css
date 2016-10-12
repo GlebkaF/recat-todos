@@ -1,0 +1,15 @@
+.todos-page-item {
+    outline: auto;
+    padding: 3px;
+    margin: 5px;
+}
+
+.create-todo-form{
+    outline: auto;
+    padding: 3px;
+    margin: 5px;
+}
+
+button{
+    margin: 3px;
+}

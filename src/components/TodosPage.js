@@ -8,7 +8,7 @@ export default class TodosPage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      importanceFilter : this.props.importance
+      importanceFilter : 0
     }
   }
 
@@ -24,8 +24,9 @@ export default class TodosPage extends Component {
 
   renderItems(){
     const filteredTasks = this.getFilteredByImportanceTasks();
+    if(!filteredTasks.length) return <h3>Задач нет!</h3>;
     return filteredTasks.map((item) => {
-      return <TodosPageItem key = {item.title} {...item} deleteTask = {this.props.deleteTask}/>
+      return <TodosPageItem key = {item.title} {...item}  deleteTask = {this.props.deleteTask} updateTask = {this.props.updateTask} getImportanceTitleByValue = {this.getImportanceTitleByValue}/>
     })
   }
 
@@ -55,12 +56,10 @@ export default class TodosPage extends Component {
     }
   }
 
-
 }
 
 
 TodosPage.propTypes = {
-  todos: PropTypes.array.isRequired,
-  importance: PropTypes.number.isRequired
+  todos: PropTypes.array.isRequired
 };
 

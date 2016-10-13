@@ -5,10 +5,6 @@ import TodosPage from '../components/TodosPage'
 import * as todosPageActions from '../actions/TodosPageActions'
 
 class App extends Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
       <div>

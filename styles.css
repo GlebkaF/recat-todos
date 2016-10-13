@@ -4,8 +4,17 @@
     margin: 5px;
 }
 
+.todos-page-item-expired{
+    background: #ffaca5;
+}
+
 .create-todo-form{
     outline: auto;
+    padding: 3px;
+    margin: 5px;
+}
+
+.update-todo-form{
     padding: 3px;
     margin: 5px;
 }

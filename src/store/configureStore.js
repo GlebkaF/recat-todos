@@ -1,10 +1,15 @@
 import { createStore,  applyMiddleware } from 'redux'
 import rootReducer from '../reducers'
-import { ping } from '../enhancers/ping' // <!-- подключаем наш enhancer
+import * as storage from 'redux-storage'
+import createEngine from 'redux-storage-engine-localstorage';
+
 
 export default function configureStore(initialState) {
-  const store = createStore(rootReducer, initialState, applyMiddleware(ping)); // <!-- добавляем его в цепочку middleware'ов);
-
+  const engine = createEngine('my-save-key-asd');
+  const localStorageMiddleware = storage.createMiddleware(engine);
+  const store = createStore(rootReducer, initialState, applyMiddleware(localStorageMiddleware));
+  const load = storage.createLoader(engine);
+  load(store);
   if (module.hot) {
     module.hot.accept('../reducers', () => {
       const nextRootReducer = require('../reducers');

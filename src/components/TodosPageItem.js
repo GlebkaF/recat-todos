@@ -6,9 +6,12 @@ export default class TodosPageItem extends Component {
     super(props);
     this.state = {
       isEditing: false,
-      isExpired: !!(this.props.deadline && (this.props.deadline - Date.now() < 0) && (!this.props.isCompleted || this.props.isCompleted > this.props.deadline))
+      isExpired: !!(this.props.deadline &&
+                    (this.props.deadline - Date.now() < 0) &&
+                    (!this.props.isCompleted || this.props.isCompleted > this.props.deadline))
     };
     const checkInterval = 1000;
+    // setTimeout когда задача истечет
     this.expireChecker = setInterval(this.setIsExpiredState.bind(this), checkInterval);
   }
 
@@ -18,11 +21,9 @@ export default class TodosPageItem extends Component {
 
   setIsExpiredState(){
     let isExpired = !!(this.props.deadline && (this.props.deadline - Date.now() < 0) && (!this.props.isCompleted || this.props.isCompleted > this.props.deadline));
-    if(this.state.isExpired !== isExpired){
       this.setState({
         isExpired
       });
-    }
   }
 
   render() {

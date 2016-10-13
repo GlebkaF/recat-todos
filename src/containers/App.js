@@ -8,14 +8,14 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1> Recat TODOs </h1>
+        <h1> React TODOs </h1>
         <TodosPage {...this.props.todosPage} {...this.props.todosPageActions}/>
       </div>
     );
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state = {}) {
   return {
     todosPage: state.todosPage
   }

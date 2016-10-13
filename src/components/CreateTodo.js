@@ -32,7 +32,15 @@ export default class CreateTodo extends Component {
     );
   }
 
-  createHandler(e){
+
+  /**
+   * _createHandler - description  
+   *
+   * @param  {type} e description
+   * @private
+   * @return {type}   description
+   */
+  _createHandler(e){
     e.preventDefault();
     let deadline = new Date(this.refs.deadlineInput.value);
     let offset = deadline.getTimezoneOffset();
@@ -47,5 +55,3 @@ export default class CreateTodo extends Component {
     this.props.addTask(task);
   }
 }
-
-

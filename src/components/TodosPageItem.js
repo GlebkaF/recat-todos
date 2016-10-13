@@ -1,5 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import classNames from 'classnames'
+import { IMPORTANCES } from '../constants/TodosPage'
+import { normalizeDateTimeInput } from '../utilities/todosUtilities'
 
 export default class TodosPageItem extends Component {
   constructor(props){
@@ -8,22 +10,24 @@ export default class TodosPageItem extends Component {
       isEditing: false,
       isExpired: !!(this.props.deadline &&
                     (this.props.deadline - Date.now() < 0) &&
-                    (!this.props.isCompleted || this.props.isCompleted > this.props.deadline))
+                    (!this.props.isCompleted || (this.props.isCompleted > this.props.deadline)))
     };
-    const checkInterval = 1000;
-    // setTimeout когда задача истечет
-    this.expireChecker = setInterval(this.setIsExpiredState.bind(this), checkInterval);
+    //TODO: change to setTimeout
+    const checkTimeout = 1000;
+    this.expireChecker = setInterval(this.setIsExpiredState.bind(this), checkTimeout);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.expireChecker);
   }
 
-  setIsExpiredState(){
-    let isExpired = !!(this.props.deadline && (this.props.deadline - Date.now() < 0) && (!this.props.isCompleted || this.props.isCompleted > this.props.deadline));
-      this.setState({
-        isExpired
-      });
+  setIsExpiredState() {
+    let isExpired = !!(this.props.deadline &&
+                        (this.props.deadline - Date.now() < 0) &&
+                          (!this.props.isCompleted || (this.props.isCompleted > this.props.deadline)));
+    this.setState({
+      isExpired
+    });
   }
 
   render() {
@@ -54,9 +58,15 @@ export default class TodosPageItem extends Component {
           <p>
             Важность:
             <select ref='importanceInput' defaultValue={this.props.importance}>
-              <option value='1'>Обычный</option>
-              <option value='2'>Важный</option>
-              <option value='3'>Очень важный</option>
+              {
+                IMPORTANCES.map((item, index) => {
+                  if (index > 0) {
+                    return (
+                      <option key = {index} value={index}>{item}</option>
+                    );
+                  }
+                })
+              }
             </select>
           </p>
           <p>
@@ -82,10 +92,14 @@ export default class TodosPageItem extends Component {
     return (
       <div>
         <h3> {title} </h3>
-        <p>Описание: {description} </p>
-        <p>Важность: {this.props.getImportanceTitleByValue(importance)} </p>
-        <p>{deadlineString ? `Истекает: ${deadlineString}` : 'Бессрочная задача'} </p>
-        <p>{completeTimeString ? `Завершено: ${completeTimeString}` : 'Не завершено'}</p>
+        <p> Описание: {description} </p>
+        <p> Важность: {IMPORTANCES[importance]} </p>
+        <p>
+          {deadlineString ? `Истекает: ${deadlineString}` : 'Бессрочная задача'}
+        </p>
+        <p>
+          {completeTimeString ? `Завершено: ${completeTimeString}` : 'Не завершено'}
+        </p>
       </div>
     );
   }
@@ -100,30 +114,27 @@ export default class TodosPageItem extends Component {
     );
   }
 
-  deleteHandler(){
+  deleteHandler() {
     this.props.deleteTask(this.props.title);
   }
 
-  toggleComplete(){
+  toggleComplete() {
     let updatedTask = {
       isCompleted:  this.props.isCompleted ? 0 : Date.now()
     }
     this.props.updateTask(this.props.title, updatedTask);
   }
 
-  toggleEdit(){
+  toggleEdit() {
     this.setState({
       isEditing: !this.state.isEditing
     })
   }
 
-  updateTaskHandler(e){
+  updateTaskHandler(e) {
     e.preventDefault();
-    let deadline = new Date(this.refs.deadlineInput.value);
-    let isCompleted = new Date(this.refs.isCompletedInput.value);
-    let offset = deadline.getTimezoneOffset();
-    deadline = new Date(deadline.getTime() + 1000*60*offset).getTime();
-    isCompleted = new Date(isCompleted.getTime() + 1000*60*offset).getTime();
+    let deadline = normalizeDateTimeInput(this.refs.deadlineInput.value);
+    let isCompleted = normalizeDateTimeInput(this.refs.isCompletedInput.value);
     const updatedTask = {
       title: this.refs.titleInput.value,
       description: this.refs.descriptionInput.value,
@@ -138,7 +149,7 @@ export default class TodosPageItem extends Component {
     this.setIsExpiredState();
   }
 
-  getHtmlDateTimeValue(time){
+  getHtmlDateTimeValue(time) {
     if(time == 0) time = Date.now();
     let date = new Date(time);
     let outputString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().length == 1 ? '0' : ''}${date.getMonth() + 1}-${(date.getDate()).toString().length == 1 ? '0' : ''}${date.getDate()}T${(date.getHours()).toString().length == 1 ? '0' : ''}${date.getHours()}:${(date.getMinutes()).toString().length == 1 ? '0' : ''}${date.getMinutes()}`;

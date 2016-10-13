@@ -4,8 +4,7 @@ import  TodosPageItem from './TodosPageItem'
 import  CreateTodo from './CreateTodo'
 
 export default class TodosPage extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       importanceFilter : 0
@@ -15,45 +14,35 @@ export default class TodosPage extends Component {
   render() {
     return (
       <div>
+        <h1> React TODOs </h1>
         <CreateTodo addTask = {this.props.addTask} />
-        <ImportanceFilter setImportanceFilter = {this.setImportanceFilter.bind(this)} importanceFilter = {this.state.importanceFilter} getImportanceTitleByValue = {this.getImportanceTitleByValue} />
+        <ImportanceFilter setImportanceFilter = {this.setImportanceFilter.bind(this)} importanceFilter = {this.state.importanceFilter}/>
         {this.renderItems()}
       </div>
     );
   }
 
-  renderItems(){
-    const filteredTasks = this.getFilteredByImportanceTasks();
-    if(!filteredTasks.length) return <h3>Задач нет!</h3>;
+  renderItems() {
+    const filteredTasks = this.getFilteredByImportanceTasks(this.state.importanceFilter);
+    if(!filteredTasks.length) {
+      return <h3>Задач нет!</h3>;
+    }
     return filteredTasks.map((item) => {
-      return <TodosPageItem key = {item.title} {...item}  deleteTask = {this.props.deleteTask} updateTask = {this.props.updateTask} getImportanceTitleByValue = {this.getImportanceTitleByValue}/>
-    })
-  }
-
-  getFilteredByImportanceTasks(){
-    if(this.state.importanceFilter === 0) return this.props.todos;
-    return this.props.todos.filter( todo => todo.importance === this.state.importanceFilter);
-  }
-
-  setImportanceFilter(importance = 0){
-    this.setState({
-      importanceFilter : importance
+      return <TodosPageItem key = {item.title} {...item}  deleteTask = {this.props.deleteTask} updateTask = {this.props.updateTask}/>
     });
   }
 
-  getImportanceTitleByValue(value){
-    switch (value) {
-      case 0 :
-        return 'Все';
-      case 1 :
-        return 'Обычные';
-      case 2 :
-        return 'Важные';
-      case 3 :
-        return 'Очень важные';
-      default:
-        return 'Неизвестное значение важности';
+  getFilteredByImportanceTasks(importanceFilter = 0) {
+    if (importanceFilter === 0) {
+      return this.props.todos;
     }
+    return this.props.todos.filter( todo => todo.importance === importanceFilter);
+  }
+
+  setImportanceFilter(importanceFilter = 0){
+    this.setState({
+      importanceFilter : importanceFilter
+    });
   }
 
 }

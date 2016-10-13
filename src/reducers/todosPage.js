@@ -23,7 +23,7 @@ export default function todosPage(state = initialState, action) {
 }
 
 function getStateWithNewTask(
-    state = {},
+    state,
     {
         description = 'No description provided',
         importance = 1,
@@ -34,8 +34,7 @@ function getStateWithNewTask(
 ){
   const isTaskValid = (title) && (!state.todos.find(item => item.title === title));
   if(isTaskValid){
-    //TODO : заменить на имуталку
-    state =  {...state, todos: state.todos.concat({
+    state = {...state, todos: state.todos.concat({
         description,
         importance,
         deadline,
@@ -44,7 +43,6 @@ function getStateWithNewTask(
     })};
   }
   else {
-    // вместо алерта logger. Логгер сам решит как показывать
     alert('Недопустимое имя или задача с таким именем уже существует');
   }
   return state;
@@ -52,19 +50,19 @@ function getStateWithNewTask(
 
 function getStateWithUpdatedTask(state, taskTitle, updatedTask){
   const indexOfUpdatingTask = state.todos.findIndex(item => item.title === taskTitle);
-  // длинная строка, в fullhd то монитор помещается?
-  const isUpdatedTaskValid = (indexOfUpdatingTask != -1) && ((taskTitle === updatedTask.title) ||  (!state.todos.find(item => item.title === updatedTask.title)));
-  // пробелыставь
+  const isUpdatedTaskValid = (indexOfUpdatingTask != -1) &&
+                              ((taskTitle === updatedTask.title) || !state.todos.find(item => item.title === updatedTask.title));
   if (isUpdatedTaskValid) {
     let updatedTodos =  state.todos.slice();
     updatedTodos[indexOfUpdatingTask] = {
       ...updatedTodos[indexOfUpdatingTask],
       ...updatedTask
     };
-    return {...state, todos: updatedTodos};
+    state = {...state, todos: updatedTodos};
   }
   else {
     alert('Недопустимое имя или задача с таким именем уже существует');
-    return state;
   }
+  return state;
+
 }

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { IMPORTANCES } from '../constants/TodosPage'
+import { normalizeDateTimeInput } from '../utilities/todosUtilities'
 
 export default class CreateTodo extends Component {
   render() {
@@ -15,10 +17,16 @@ export default class CreateTodo extends Component {
           </p>
           <p>
             Важность:
-            <select ref='importanceInput'>
-              <option value='1'>Обычный</option>
-              <option value='2'>Важный</option>
-              <option value='3'>Очень важный</option>
+            <select ref='importanceInput' defaultValue='1'>
+              {
+                IMPORTANCES.map((item, index) => {
+                  if (index > 0) {
+                    return (
+                      <option key = {index} value={index}>{item}</option>
+                    );
+                  }
+                })
+              }
             </select>
           </p>
           <p>
@@ -33,22 +41,13 @@ export default class CreateTodo extends Component {
   }
 
 
-  /**
-   * _createHandler - description  
-   *
-   * @param  {type} e description
-   * @private
-   * @return {type}   description
-   */
-  _createHandler(e){
+  createHandler(e){
     e.preventDefault();
-    let deadline = new Date(this.refs.deadlineInput.value);
-    let offset = deadline.getTimezoneOffset();
-    deadline = new Date(deadline.getTime() + 1000*60*offset).getTime();
+    let deadline = normalizeDateTimeInput(this.refs.deadlineInput.value);
     const task = {
       title: this.refs.titleInput.value,
       description: this.refs.descriptionInput.value,
-      importance: this.refs.importanceInput.value,
+      importance: Number(this.refs.importanceInput.value),
       deadline: this.refs.noDeadlineInput.checked ? 0 : deadline,
       isCompleted: 0
     };

@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 
 export default class ImportanceFilterButton extends Component {
-
   render() {
     return (
-      <button onClick={this.setImportanceFilter.bind(this)}>
-        {this.props.getImportanceTitleByValue(this.props.importance)}
+      <button onClick={this.props.setImportanceFilter.bind(this, this.props.importance)}>
+        {this.props.importanceTitle}
       </button>
     );
   }
 
-  setImportanceFilter(){
-    this.props.setImportanceFilter(this.props.importance);
-  }
 }
